@@ -1,0 +1,143 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<!--xacro:property name="${tf_prefix}_body_color" value="Gazebo/Silver" />
+<xacro:property name="${tf_prefix}_base_color" value="Gazebo/green" /-->
+
+    <gazebo>
+        <plugin
+            filename="gz-sim-diff-drive-system"
+            name="gz::sim::systems::DiffDrive">
+            <left_joint>left_wheel_joint</left_joint>
+            <right_joint>right_wheel_joint</right_joint>
+            <frame_id>odom</frame_id>
+            <child_frame_id>base_footprint</child_frame_id>
+            <wheel_separation>0.18</wheel_separation>
+            <wheel_radius>0.04</wheel_radius>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin
+            filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+            <topic>/joint_state</topic>
+            <publish_link_pose>true</publish_link_pose>
+            <publish_joint_position>true</publish_joint_position>
+            <publish_joint_velocity>true</publish_joint_velocity>
+            <publish_joint_force>true</publish_joint_force>
+        </plugin>
+    </gazebo>
+
+    
+<!--gazebo reference="base_link">
+  <material>${tf_prefix}_${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+  <gravity>true</gravity>
+</gazebo>
+
+<gazebo reference="lidar_1">
+  <material>${tf_prefix}_${base_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="camera_1">
+  <material>${tf_prefix}_${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="right_wheel_1">
+  <material>${tf_prefix}_${body_color}</material>
+  <mu1>0.6</mu1>
+  <mu2>0.6</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="caster_wheel_1">
+  <material>${tf_prefix}_${body_color}</material>
+  <mu1>0.05</mu1>
+  <mu2>0.05</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="left_wheel_1">
+  <material>${tf_prefix}_${body_color}</material>
+  <mu1>0.6</mu1>
+  <mu2>0.6</mu2>
+  <self_collide>true</self_collide>
+</gazebo-->
+
+  <gazebo>
+    <plugin name="gz::sim::systems::Sensors" filename="gz-sim-sensors-system"> 
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo>  
+
+  <gazebo reference="lidar_1">
+    <sensor name="lidar_1" type="gpu_lidar">
+      <pose relative_to='lidar_1'> 0 0 0 0 0 0 </pose>
+
+      <frame_name>lidar_1</frame_name>
+      <frame_id>lidar_1</frame_id>
+      <gz_frame_id>lidar_1</gz_frame_id>
+      <topic>/scan</topic>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <always_on>1</always_on>
+      
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14</min_angle>
+            <max_angle>3.14</max_angle>
+          </horizontal>
+        </scan>
+
+        <range>
+          <min>0.02</min>
+          <max>12</max>
+          <resolution>0.01</resolution>
+        </range> 
+
+        <noise>
+          <type>gaussian</type>
+          <mean>0</mean>
+          <stddev>0.01</stddev>
+        </noise>   
+      </lidar>
+    </sensor>  
+  </gazebo>
+
+  <gazebo reference="camera_1">
+    <sensor name="camera_1" type="rgbd_camera">
+      <pose relative_to='camera_1'> 0 0 0 0 0 0 </pose>
+
+      <topic>/camera</topic>
+      <gz_frame_id>camera_1</gz_frame_id>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <always_on>1</always_on>
+      
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>424</width>
+          <height>240</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>1.5</far>
+        </clip>
+      </camera>  
+    </sensor>  
+  </gazebo> 
+
+</robot>

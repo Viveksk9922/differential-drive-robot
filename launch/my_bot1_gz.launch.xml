@@ -1,0 +1,26 @@
+<launch>
+    <let name="urdf_path" value="$(find-pkg-share my_bot1_description)/urdf/my_bot1.xacro" />
+
+    <let name="gazebo_config_path" value="$(find-pkg-share my_bot1_description)/config/my_bot1_gz_bridge.yaml" />
+
+    <let name="gazebo_world" value="$(find-pkg-share navigation_bringup)/worlds/hospital.sdf" /> 
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher" >
+        <param name="robot_description" value="$(command 'xacro $(var urdf_path)')" />
+        
+    </node>
+
+    <node pkg="ros_gz_bridge" exec="parameter_bridge">
+        <param name="config_file" value="$(var gazebo_config_path)" />
+    </node>        
+
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+        <arg name="gz_args" value="-r $(var gazebo_world)" />
+    </include>
+ 
+    <node pkg="ros_gz_sim" exec="create" args="-world hospital_world -topic robot_description" />    
+
+    <node pkg="my_bot1_description" exec="lidar_scan_node.py" />
+
+    <node pkg="my_bot1_description" exec="cmd_nav_to_cmd.py"/>
+</launch>
